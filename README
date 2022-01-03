@@ -1,0 +1,411 @@
+------- PROIECTAREA ALGORITMILOR -------
+--- TEMA 1 - ANOTHER DAY IN GIGELAND ---
+
+     _ __    ,---.      
+  .-`.' ,`..--.'  \     
+ /==/, -   \==\-/\ \    
+|==| _ .=. /==/-|_\ |   
+|==| , '=',\==\,   - \  
+|==|-  '..'/==/ -   ,|  
+|==|,  |  /==/-  /\ - \ 
+/==/ - |  \==\ _.\=\.-' 
+`--`---'   `--`         
+
+Cuprins:
+	1. Problema 1 "Bani"....................Linia  35
+		1.1. Tipul 1 de instructiuni........Linia  38
+		1.2. Tipul 2 de instructiuni........Linia  60
+	2. Problema 2 "Gard"....................Linia 114
+		2.1. Clasa "Interval"...............Linia 117
+		2.2. Rezolvare......................Linia 129
+	3. Problema 3 "Bomboane"................Linia 169
+		3.1. Clasa "Interval"...............Linia 172
+		3.2. Rezolvare......................Linia 181
+	4. Problema 4 "Sala" (BONUS)............Linia 270
+		4.1. Clasa "Dumbbell"...............Linia 273
+		4.2. Clasa "MyPriorityQueue"........Linia 282
+		4.3. Rezolvare......................Linia 317
+	5. Alte detalii.........................Linia 409
+
+
+--- -------------------- ---
+--- 1. Problema 1 "Bani" ---
+--- -------------------- ---
+
+=== Tipul 1 de instructiuni ===
+
+	- Se observa cum fiecare bancnota poate are exact 2 succesori. Prin urmare,
+	spatiul solutiilor, pentru o bancnota, are forma unui binary tree complet,
+	iar numarul solutiilor incepand cu acea bancnota este dat de numarul
+	frunzelor 2^(n-1); unde n este marimea unei solutii
+
+	- Fiind 5 bancnote, rezultatul final este 5 * 2^(n-1)
+
+	- Intrucat se lucreaza cu numere foarte mari, ridicarea la putere se face
+	cu ajutorul functiei 'modPow', ce ridica o baza la un exponent avand grija
+	sa pastreze intotdeauna rezultatul in modulo 'resMod' (10^9 + 7)
+
+	* COMPLEXITATE TEMPORALA:
+		O(1)
+		- Rezultatul este calculat printr-o formula matematica
+
+	* COMPLEXITATE SPATIALA:
+		O(1)
+		- Este nevoie doar de stocarea numarului 'n'
+
+
+=== Tipul 2 de instructiuni ===
+
+	- Se foloseste programare dinamica
+
+	- Se observa cum pentru a afla numarul de solutii de marime 'M' care incep
+	cu bancnota 'B', se aduna numarul de solutii de marime 'M - 1' care incep
+	cu fiecare dintre succesorii bancnotei 'B'
+
+	- Astfel, se formeaza o matrice 'dp' cu '5' (numarul de bancnote) linii si
+	'n' (marimea maxima a solutiei) coloane, cu semnificatia:
+		- dp[i][j] == numarul de solutii de marime 'j + 1' care incep cu
+		bancnota 'i' (indicele)
+
+		- indicii bancnotelor sunt:
+			0 ->  10
+			1 ->  50
+			2 -> 100
+			3 -> 200
+			4 -> 500
+
+	- Rezultatul final este dat de suma de pe ultima coloana, fiecare membru
+	reprezentand in cate moduri se poate obtine o solutie de marime 'n',
+	incepand cu bancnota 'i' (randul)
+
+	- Intrucat se lucreaza cu numere foarte mari, orice adunare se realizeaza
+	cu ajutorul functiei 'modSum', ce pur si simplu aduna doua numere si
+	pastreaza rezultatul in modulo 'resMod' (10^9 + 7)
+
+	* COMPLEXITATE TEMPORALA:
+		O(n)
+
+		- 'n' este marimea solutiei
+
+		- Trebuie parcursa matricea dp ce are 5 linii si n coloane:
+			O(5*n) = O(n)
+
+		- Trebuie calculata suma ultimei coloane:
+			O(5) = O(1)
+
+		* O(n) + O(1) = O(n)
+
+	* COMPLEXITATE SPATIALA:
+		O(n)
+
+		- Trebuie salvata matricea antepusa:
+			O(5*n) + O(1) = O(n)
+
+		- Precum si alte variabile simple:
+			O(1)
+
+		* O(n) + O(1) = O(n)
+
+
+--- -------------------- ---
+--- 2. Problema 2 "Gard" ---
+--- -------------------- ---
+	
+=== 2.1. Clasa "Interval" ===
+	
+	- Un obiect de acest tip reprezinta o bucata din gard avand coordonatele
+	'start' si 'end'
+
+	- Este prezenta o metoda 'contains' ce primeste alt interval si decide
+	daca acesta este inclus in intervalul obiect ce o apeleaza
+
+	- Doua intervale se pot compara prin 'compareTo' crescator dupa coordonata
+	'start' si, in caz de egalitate, descrescator dupa coordonata 'end'
+
+
+=== 2.2. Rezolvare ===
+	
+	- Dupa citirea tuturor intervalelor, acestea se sorteaza dupa 'compareTo'
+
+	- Astfel, se poate aplica o abordare Greedy in felul urmator:
+		* Se alege un interval drept referinta (initial, primul)
+
+		* Se compara cu urmatorul interval:
+			* Daca cel de referinta il include, este redundant. Se pastreaza
+			acelasi interval de referinta si se trece la urmatorul pas
+
+			* Daca nu, este necesar. Intervalul nou de referinta devine cel
+			comparat, si se trece la urmatorul pas
+
+	* COMPLEXITATE TEMPORALA:
+		O(n * log(n))
+
+		- 'n' este numarul de intervale (bucati de gard)
+
+		- Sortarea intervalelor se realizeaza cu ajutorul lui MergeSort:
+			O(n * log(n))
+
+		- Se parcurge o singura data aceasta lista ordonata:
+			O(n)
+
+		* O(n * log(n)) + O(n) = O(n * log(n))
+
+	* COMPLEXITATE SPATIALA:
+		O(n)
+
+		- Este nevoie de stocarea intervalelor:
+			O(n)
+
+		- Precum si alte variabile simple:
+			O(1)
+
+		* O(n) + O(1) = O(n)
+
+
+--- ------------------------ ---
+--- 3. Problema 3 "Bomboane" ---
+--- ------------------------ ---
+
+=== 3.1. Clasa "Student" ===
+
+	- Un obiect de acest timp reprezinta intervalul de "cam cate" probleme a
+	rezolvat un student, anume intre 'start' si 'end'
+
+	- Prezinta o metoda 'contains' ce decide daca un numar primit se afla in
+	acest interval
+
+
+=== 3.2. Rezolvare ===
+
+	- Se foloseste programare dinamica
+
+	- Se observa cum se poate construi solutia bottom-down, incepand de la un
+	student si observand in cate moduri i se poate da un anumit numar de
+	bomboane, dupa care se pune aceeasi intrebare pentru urmatorul student,
+	tinand cont de toti cei precedenti
+
+	- Astfel, se formeaza o matrice 'dp' cu 'n' (studenti) linii si 'm+1'
+	(numarul de bomboane, inclusiv 0) coloane, cu semnificatia:
+		- dp[i][j] == in cate feluri putem oferi primilor 'i+1' studenti 'j'
+		bomboane
+
+	- Initializarea matricei incepe cu primul student:
+		* Daca mai avem 'j' bomboane iar 'j' este in intervalul studentului,
+		exista un singur mod de a-i da aceste bomboane (toate)
+
+	- Pentru fiecare student ulterior:
+		* Numarul de posiblitati in care poate primi un anumit numar de
+		bomboane depinde, in primul rand, de numarul de posibilitati in care
+		studentii precedenti pot primi un numar de bomboane, CONDITIONAT de
+		faptul ca acest student poate primi oricate bomboane din intervalul
+		lui
+
+		* Prin urmare, se itereaza prin intervalul studentului pentru a
+		testa aceasta logica:
+			* Pentru 'j' numar din intervalul studentului, in cate feluri
+			poate primi ACEST student un anumit numar de bomboane 'k' tinand
+			cont ca a trebuit sa le oferim studentilor precedenti 'k-j'
+			bomboane
+
+	- Rezultatul final se obtine astfel in dp[n - 1][m]
+		- In cate moduri putem oferi primilor 'n - 1 + 1' (n) studenti 'm'
+		bomboane (problema initiala)
+
+	- Se observa cum daca sunt prea putine bomboane, nu se ajunge pe coloana
+	'm', iar daca sunt prea multe, se "depaseste" devreme, rezultatul final
+	ramanand la valoarea initializata 0
+
+	- Intrucat se lucreaza cu numere foarte mari, orice adunare se realizeaza
+	cu ajutorul functiei 'modSum', ce pur si simplu aduna doua numere si
+	pastreaza rezultatul in modulo 'resMod' (10^9 + 7)
+
+	* COMPLEXITATE TEMPORALA:
+		O(m * (k1 + k2 + ... +kn))
+		sau
+		O(m * n)
+
+		- 'm' reprezinta numarul de bomboane
+
+		- 'ki' reprezinta lungimea intervalului studentului 'i'
+
+		- 'n' reprezinta numarul de studenti
+
+		- Desi sunt 3 for-uri, cel cu variabila 'i' doar decide capetele
+		for-ului cu variabila 'j', care are lungimea 'ki'
+			O(sum(ki)), cu i in [1, n]
+
+		- Cel de-al 3-lea for clar ruleaza in complexitate:
+			O(m)
+
+		* O(m) * O(sum(ki)) = O(m * sum(ki)), cu i in [1, n]
+
+		* Acest rezultat este valabil si in cazul in care valorile 'ki' nu pot
+		fi oricat de mari, spre deosebire de 'n', intrucat, in caz contrar,
+		ele pot avea o valoare constanta 'k':
+			O(sum(ki)) = O(n * k) = O(n), cu i in [1, n]
+
+			Iar: O(m) * O(n) = O(m * n)
+
+		* Prin urmare, un alt rezultat final este O(m * n)
+
+	* COMPLEXITATE SPATIALA:
+		O(n * m)
+
+		- Este necesara stocarea intervalelor studentilor:
+			O(n)
+
+		- Este necesara stocarea matricei 'dp':
+			O(n) * O(m + 1) = O(n) * O(m) = O(n * m)
+
+		- Precum si alte variabile simple:
+			O(1)
+
+		* O(n) + O(n * m) + O(1) = O(n * m)
+
+
+--- -------------------------- ---
+--- 4. Problema "Sala" (BONUS) ---
+--- -------------------------- ---
+
+=== 4.1. Clasa "Dumbbell" ===
+	
+	- Un obiect de acest tip reprezinta o greutate, definita de campurile
+	'weight' (greutatea propriu-zisa) si 'reps' (repetarile maxime)
+
+	- Se pot compara doua astfel de obiecte descrescator dupa 'weight' prin
+	'compareTo'
+
+
+=== 4.2. Clasa "MyPriorityQueue" ===
+
+	- Un obiect de acest tip reprezinta un wrapper propriu asupra unei
+	java.util.PriorityQueue
+
+	- Este prezent un camp 'maxSize' ce defineste numarul maxim de elemente ce
+	pot fi introduse in coada
+
+	- Coada stocheaza elemente de tip "Dumbbell". Totodata este prezent un camp
+	'repSum' ce reprezinta suma campurilor 'reps' ale tuturor elementelor
+	prezente in coada. Acest numar este actualizat la fiecare inserare si
+	eliminare, pentru a evita parcurgerea O(n) a cozii pentru calcularea lui
+
+	- Prioritatea cozii este determinata de campul 'reps' al elementelor ei,
+	pe prima pozitie aflandu-se elementul cu cea mai mica valoare a campului
+
+	- Sunt prezente diferite metode pentru a folosi dupa propriul plan coada:
+		* hasBetterReps
+			- Decide daca un anumit element are campul 'reps' mai mare decat
+			primul element din coada (astfel, este mai prioritar decat acesta)
+
+		* hasSpace
+			- Decide daca este spatiu in coada (dupa 'maxSize')
+
+		* offer
+			- Adauga un element in coada daca mai este spatiu
+
+			- Actualizeaza 'repSum'
+
+		* poll
+			- Elimina si returneaza primul element din coada, daca exista
+
+			- Actualizeaza 'repSum'
+
+
+=== 4.3. Rezolvare ===
+
+	- Se incepe prin sortarea in mod descrescator dupa 'weight' a greutatilor.
+	Astfel, iterand prin ele, stim ca greutatea curenta are cel mai mic
+	'weight' de pana atunci
+
+	- La orice pas, dorim ca in coada de prioritate sa avem elemente care
+	contribuie sau POT CONTRIBUI (foarte important) la solutie.
+		- Se poate intampla ca o anumita combinatie de greutati sa aiba atat
+		de multe repetari astfel incat sa compenseze pentru valoarea greutatii
+		minime
+
+		- Intrucat la un anumit pas stim ca lucram cu cea mai mica greutate
+		DE PANA ATUNCI (foarte important), dorim ca suma de repetari din coada
+		sa fie maxima, intrucat doar asa putem maximiza formula muschilor
+
+		- Mai precis, daca am folosit in solutie o greutate ce are cea mai mica
+		masa de pana atunci, maximizarea rezultatului se poate face prin
+		includerea greutatilor care ofera suma maxima de repetari, si sunt
+		strict mai grele decat cea mentionata
+
+	- Astfel, la fiecare pas se aplica:
+		* Daca este loc in coada, nu exista niciun motiv pentru care sa nu
+		includem greutatea
+			* O adaugam in coada
+
+			* Verificam daca ne imbunatateste solutia. Chiar daca nu o face,
+			o poate face pe viitor in combinatie cu alte greutati
+
+		* Daca nu mai este loc in coada, verificam daca aceasta greutate
+		aduce un beneficiu mai mare decat vreo greutate din coada. Anume,
+		comparam cu prima greutate din lista, folosindu-ne de sortarea dupa
+		prioritate ('hasBetterReps')
+			* Daca se intampla acest lucru, vrem ca elementele din coada sa
+			ne ofere cel mai mare beneficiu. Aceasta coada functioneaza precum
+			energia potentiala. Chiar daca nu stim daca o vom folosi sau nu,
+			vrem ca in cazul in care o folosim sa fie cat mai mare
+
+			* Astfel, scoatem elementul care aduce cel mai mic beneficiu
+			(primul) si il adaugam pe cel curent (inserare O(log(n)))
+
+			* Similar ramurii precedente, verificam daca ne imbunatateste
+			solutia. Chiar daca nu o face, o poate face pe viitor in
+			combinatie cu alte greutati
+
+		* In cazul in care nu este loc in coada si nu aduce vreun beneficiu,
+		nu exista vreun motiv pentru care sa putem folosi acest element. Pur
+		si simplu trecem la urmatorul
+
+	- Rezultatul este scorul ce a rezultat dupa iterarea prin fiecare greutate
+
+	* COMPLEXITATE TEMPORALA:
+		O(n * log(n))
+
+		- 'n' este numarul de greutati
+
+		- 'm' este numarul maxim de greutati
+
+		- Sortarea greutatilor prin MergeSort:
+			O(n * log(n))
+
+		- Parcurgerea fiecarei greutati:
+			O(n)
+
+		- Eventuala inserare in coada (o coada poate avea maximum 'm'
+		elemente:
+			O(log(m))
+			- Dar m <= n, deci:
+			O(log(n))
+
+		* O(n * log(n)) + O(n) * O(log(n)) = 
+			= O(n * log(n)) + O(n * log(m)) =
+			= O(n * log(n))
+
+	* COMPLEXITATE SPATIALA:
+		O(n)
+
+		- Este necesara stocarea greutatilor:
+			O(n)
+
+		- Este necesara stocarea cozii de prioritate:
+			O(m)
+			- Dar m <= n, deci:
+			O(n)
+
+		- Precum si alte variabile simple:
+			O(1)
+
+		* O(n) + O(n) + O(1) = O(n)
+
+
+--- --------------- ---
+--- 5. Alte detalii ---
+--- --------------- ---
+
+	* FEEDBACK:
+		- Votez pozitiv aceasta tema (avand in vedere legatura dintre aceasta
+		si conceptul materiei, predarea de la curs si de la laborator)
